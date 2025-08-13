@@ -2,12 +2,13 @@ import os
 import subprocess
 import tempfile
 import shutil
-import logging
 from enum import Enum
 from pathlib import Path
 
+from structlog import get_logger
 
-logger = logging.getLogger("scanline_wrapper")
+
+logger = get_logger(__name__)
 
 
 class PageSize(Enum):
@@ -124,9 +125,6 @@ def list_scanners(browsesecs=1, verbose=False):
     :rtype: list(str)
     :returns: the available scanners.
     """
-    if verbose:
-        logging.basicConfig(level=logging.INFO)
-
     if not _is_scanline_available():
         raise ScanlineExecutableNotFound(
             "The scanline command was not found. Is scanline installed?"
@@ -222,9 +220,6 @@ def scan_flatbed(
             "The scanline command was not found. Is scanline installed?"
         )
 
-    if verbose:
-        logging.basicConfig(level=logging.INFO)
-
     # Normalize path
     output_path = Path(output_path).absolute()
 
@@ -296,8 +291,8 @@ def scan_flatbed(
         command += ["-name", tmp_output_path.with_suffix("").name]
 
         # Call scanline
-        logger.info("Running command: %s" % " ".join(command))
-        proc = subprocess.run(command, check=True, capture_output=True)
+        logger.info("Running command: %s", command)
+        proc = subprocess.run(command, check=True, capture_output=True)  # type: ignore
         logger.info(proc.stdout.decode("UTF-8", errors="ignore"))
 
         for line in proc.stdout.decode("UTF-8", errors="ignore").split("\n"):
