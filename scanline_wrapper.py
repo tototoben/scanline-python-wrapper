@@ -149,7 +149,7 @@ def list_scanners(browsesecs=1, verbose=False):
     return scanners
 
 
-def scan_flatbed(
+def scan(
     output_path,
     scanner=None,
     is_scanner_exact_name=False,
@@ -160,12 +160,12 @@ def scan_flatbed(
     browsesecs=1,
     verbose=False,
 ):
-    """Scans a document using the flatbed unit of the scanner.
+    """Scans a document.
 
     Simple example:
 
     >>> import scanline_wrapper
-    >>> scanline_wrapper.scan_flatbed("./out.tiff")
+    >>> scanline_wrapper.scan("./out.tiff")
 
     More complete example:
 
@@ -224,7 +224,6 @@ def scan_flatbed(
     output_path = Path(output_path).absolute()
 
     command = [_get_scanline_cmd()]
-    command += ["-flatbed"]
 
     # Scanner selection
     if scanner:
